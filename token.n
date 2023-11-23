@@ -1,0 +1,251 @@
+module main
+
+enum Kind {
+	eof					// '<eof>'
+	token_name 			// user
+	token_int 			// 123
+	token_string 		// 'foo' or "bar"
+	token_char 			// `N` - rune
+	plus 				// +
+	minus 				// -
+	mul 				// *
+	div 				// /
+	mod 				// %
+	xor 				// ^
+	pipe 				// |
+	inc 				// ++
+	dcm 				// --
+	and 				// &&
+	lor 				// ||
+	not 				// !
+	bit_not 			// ~
+	question 			// ?
+	comma 				// ,
+	semicolon 			// ;
+	colon 				// :
+	amp 				// &
+	hash 				// #
+	at 					// @
+	dollar 				// $
+	left_shift 			// <<
+	right_shift 		// >>
+
+	assign 				// =
+	decl_assign 		// :=
+	plus_assign 		// +=
+	minus_assign 		// -=
+	div_assign 			// /=
+	mul_assign 			// *=
+	xor_assign 			// ^=
+	mod_assign 			// %=
+	or_assign 			// |=
+	and_assign 			// &=
+	right_shift_assign 	// <<=
+	left_shift_assign 	// >>=
+
+	left_cbr 			// {
+	right_cbr 			// }
+	left_par 			// (
+	right_par 			// )
+	left_sbr 			// [
+	right_sbr 			// ]
+
+	eq 					// ==
+	ne 					// !=
+	gt 					// >
+	lt 					// <
+	ge 					// >=
+	le 					// <=
+
+	line_cmt 			// //
+	mline_cmt 			// /*...*/
+	nl					// nll
+	sdot 				// .
+	ddot 				// ..
+
+	_start_
+	keyword_module
+	keyword_struct
+	keyword_if
+	keyword_else
+	keyword_return
+	keyword_go
+	keyword_const
+	keyword_import_const
+	keyword_mut
+	keyword_type
+	keyword_enum
+	keyword_for
+	keyword_switch
+	keyword_match
+	keyword_case
+	keyword_fn
+	keyword_true
+	keyword_false
+	keyword_continue
+	keyword_break
+	keyword_embed
+	keyword_import
+	keyword_typeof
+	keyword_default
+	keyword_endif
+	keyword_assert
+	keyword_sizeof
+	keyword_in
+	keyword_atomic
+	keyword_interface
+	keyword_orelse
+	keyword_global
+	keyword_union
+	keyword_pub
+	keyword_goto
+	keyword_static
+	_end_
+}
+
+// Keywords['return'] == .return
+fn build_keys() map_int {
+	mut res := map[string]int{}
+	for t := int(_start_) + 1; t < int(_end_); t++ {
+		key := token_str[t]
+		res[key] = int(t)
+	}
+	return res
+}
+
+fn build_token_str() []string {
+	mut s := [''; 140]
+	s[_start_] 				= ''
+	s[_end_] 				= ''
+	s[eof] 					= 'eof'
+	s[token_name] 			= 'token_name'
+	s[token_int] 			= 'token_int'
+	s[token_string] 		= 'str'
+	s[token_char] 			= 'token_char'
+	s[plus] 				= '+'
+	s[minus] 				= '-'
+	s[mul] 					= '*'
+	s[div] 					= '/'
+	s[mod] 					= '%'
+	s[xor] 					= '^'
+	s[bit_not] 				= '~'
+	s[pipe] 				= '|'
+	s[hash] 				= '#'
+	s[amp] 					= '&'
+	s[at] 					= '@'
+	s[inc] 					= '++'
+	s[dcm] 					= '--'
+	s[and] 					= '&&'
+	s[lor] 					= '||'
+	s[not] 					= '!'
+	s[sdot] 				= '.'
+	s[ddot] 				= '..'
+	s[comma] 				= ','
+	s[semicolon] 			= ';'
+	s[colon] 				= ':'
+	s[assign] 				= '='
+	s[decl_assign] 			= ':='
+	s[plus_assign] 			= '+='
+	s[minus_assign] 		= '-='
+	s[mul_assign] 			= '*='
+	s[div_assign] 			= '/='
+	s[xor_assign] 			= '^='
+	s[mod_assign] 			= '%='
+	s[or_assign] 			= '|='
+	s[and_assign] 			= '&='
+	s[right_shift_assign] 	= '>>='
+	s[left_shift_assign] 	= '<<='
+	s[left_cbr] 			= '{'
+	s[right_cbr] 			= '}'
+	s[left_par] 			= '('
+	s[right_par] 			= ')'
+	s[left_sbr] 			= '['
+	s[right_sbr] 			= ']'
+	s[eq] 					= '=='
+	s[ne] 					= '!='
+	s[gt] 					= '>'
+	s[lt] 					= '<'
+	s[ge] 					= '>='
+	s[le] 					= '<='
+	s[question] 			= '?'
+	s[left_shift] 			= '<<'
+	s[right_shift] 			= '>>'
+	s[line_cmt] 			= '//'
+	s[nl] 					= 'nll'
+	s[dollar] 				= '$'
+	s[keyword_assert] 		= 'assert'
+	s[keyword_struct] 		= 'struct'
+	s[keyword_if] 			= 'if'
+	s[keyword_else] 		= 'else'
+	s[keyword_return] 		= 'return'
+	s[keyword_module] 		= 'module'
+	s[keyword_sizeof] 		= 'sizeof'
+	s[keyword_go] 			= 'go'
+	s[keyword_goto] 		= 'goto'
+	s[keyword_const] 		= 'const'
+	s[keyword_mut] 			= 'mut'
+	s[keyword_type] 		= 'type'
+	s[keyword_for] 			= 'for'
+	s[keyword_switch] 		= 'switch'
+	s[keyword_match] 		= 'match'
+	s[keyword_case] 		= 'case'
+	s[keyword_fn] 			= 'fn'
+	s[keyword_true] 		= 'true'
+	s[keyword_false] 		= 'false'
+	s[keyword_continue] 	= 'continue'
+	s[keyword_break] 		= 'break'
+	s[keyword_import] 		= 'import'
+	s[keyword_embed] 		= 'embed'
+	s[keyword_typeof] 		= 'typeof'
+	s[keyword_default] 		= 'default'
+	s[keyword_endif] 		= 'endif'
+	s[keyword_enum] 		= 'enum'
+	s[keyword_interface] 	= 'interface'
+	s[keyword_pub] 			= 'pub'
+	s[keyword_import_const] = 'import_const'
+	s[keyword_in] 			= 'in'
+	s[keyword_atomic] 		= 'atomic'
+	s[keyword_orelse] 		= 'or'
+	s[keyword_global] 		= '__global'
+	s[keyword_union] 		= 'union'
+	s[keyword_static] 		= 'static'
+	return s
+}
+
+const (
+	token_str = build_token_str()
+	keywords = build_keys()
+)
+
+fn key_to_token(key string) Kind {
+	return Kind(keywords[key])
+}
+
+fn is_key(key string) bool {
+	return int(key_to_token(key)) > 0
+}
+
+fn (t Kind) str() string {
+	return token_str[int(t)]
+}
+
+fn (t Kind) is_decl() bool {
+	return t == keyword_enum || t == keyword_interface || t == keyword_fn || t == keyword_struct || t == keyword_type || t == keyword_const || t == keyword_import_const || t == at || t == keyword_pub || t == eof
+}
+
+const (
+	assign_tokens = [assign, plus_assign, minus_assign, mul_assign, div_assign, xor_assign, mod_assign, or_assign, and_assign, right_shift_assign, left_shift_assign]
+)
+
+fn (t Kind) is_assign() bool {
+	return t in assign_tokens
+}
+
+fn (t []Kind) contains(val Kind) bool {
+	for n in t {
+		if n == val {
+			return true
+		}
+	}
+	return false
+}
